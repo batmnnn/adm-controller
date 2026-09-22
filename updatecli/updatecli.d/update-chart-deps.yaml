@@ -44,7 +44,7 @@ targets:
       - '{{ printf "source#source/%s" $oci.image }}'
     spec:
       file: "{{ $oci.file }}"
-      matchpattern: '(repository: "{{ trimPrefix "ghcr.io/" $oci.image }}"\n(?:[ \t]*#.*\n)*[ \t]*tag: )(v?\S+)'
+      matchpattern: '(repository: "{{ trimPrefix "ghcr.io/" $oci.image }}"\n([ \t]*#.*\n)*[ \t]*tag: )(v?\S+)'
       replacepattern: '${1}{{ printf "source/%s" $oci.image | source }}'
   # {{ end }}
   # {{ end }}
