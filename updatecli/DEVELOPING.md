@@ -68,3 +68,7 @@ To add a new OCI artifact or Helm chart:
 1. Edit `updatecli/values/artifacts.yaml`
 2. Add the artifact to the `ociArtifacts` or `helmCharts` list
 3. Test with `updatecli compose diff` before committing
+
+Targets that write `charts/admission-controller/values.yaml` must use
+`kind: file` with a match on the unique `repository:` line. A `kind: yaml`
+target rewrites the whole file and can drop `# @schema` comments.

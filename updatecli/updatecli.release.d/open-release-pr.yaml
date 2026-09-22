@@ -78,30 +78,35 @@ targets:
     spec:
       file: charts/admission-controller/Chart.yaml
       key: $.appVersion
+  # kind: file (not yaml): a YAML rewrite drops # @schema comments in values.yaml.
+  # Anchor each replace on the unique repository line so only that tag changes.
   update_controller_image_tag:
     scmid: default
     name: Update Helm chart admission-controller image tag
-    kind: yaml
+    kind: file
     sourceid: desiredReleaseVersion
     spec:
       file: charts/admission-controller/values.yaml
-      key: $.image.tag
+      matchpattern: '(repository: "kubewarden/adm-controller/controller"\n(?:[ \t]*#.*\n)*[ \t]*tag: )(v?\S+)'
+      replacepattern: '${1}{{ source "desiredReleaseVersion" }}'
   update_audit_scanner_image_tag:
     scmid: default
     name: Update Helm chart audit-scanner version
-    kind: yaml
+    kind: file
     sourceid: desiredReleaseVersion
     spec:
       file: charts/admission-controller/values.yaml
-      key: $.auditScanner.image.tag
+      matchpattern: '(repository: "kubewarden/adm-controller/audit-scanner"\n(?:[ \t]*#.*\n)*[ \t]*tag: )(v?\S+)'
+      replacepattern: '${1}{{ source "desiredReleaseVersion" }}'
   update_policy_server_image_tag:
     scmid: default
     name: Update Helm chart policy-server version
-    kind: yaml
+    kind: file
     sourceid: desiredReleaseVersion
     spec:
       file: charts/admission-controller/values.yaml
-      key: $.policyServer.image.tag
+      matchpattern: '(repository: "kubewarden/adm-controller/policy-server"\n(?:[ \t]*#.*\n)*[ \t]*tag: )(v?\S+)'
+      replacepattern: '${1}{{ source "desiredReleaseVersion" }}'
   update_readme:
     scmid: default
     name: Update Helm chart admission-controller README

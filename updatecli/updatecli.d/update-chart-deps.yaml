@@ -33,16 +33,19 @@ sources:
 targets:
   # {{ range $oci := .ociArtifacts}}
   # {{ if not $oci.skipVersionFromRegistry }}
+  # kind: file (not yaml): a YAML rewrite drops # @schema comments in values.yaml.
+  # The repository path is the image without the ghcr.io/ registry prefix.
   "target/{{ $oci.image }}":
     name: "Update {{ $oci.image }} image tag"
-    kind: yaml
+    kind: file
     sourceid: "source/{{ $oci.image }}"
     scmid: "default"
     dependson:
       - '{{ printf "source#source/%s" $oci.image }}'
     spec:
       file: "{{ $oci.file }}"
-      key: "{{ $oci.key }}"
+      matchpattern: '(repository: "{{ trimPrefix "ghcr.io/" $oci.image }}"\n(?:[ \t]*#.*\n)*[ \t]*tag: )(v?\S+)'
+      replacepattern: '${1}{{ printf "source/%s" $oci.image | source }}'
   # {{ end }}
   # {{ end }}
   # {{ range $chart := .helmCharts}}
